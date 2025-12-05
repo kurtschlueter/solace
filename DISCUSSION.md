@@ -5,6 +5,7 @@ Friday 12/5/2025 ~9:10am: Downloaded and set up git repo and started working.
 Friday 12/5/2025 ~9:40am: Paused working. At this stage I am 30ish minutes in. Am needed elsewhere.
 Friday 12/5/2025 ~11:00am: Started working again. DB set up.
 Friday 12/5/2025 ~11:38am: Paused working. At this stage I am 1 hour 8 minutes in.
+Friday 12/5/2025 ~~1:00pm: Started working again. Styling
 
 
 The first thing I did was install packages and ran local dev. The console showed some errors and warnings that I cleaned up right away.
@@ -41,4 +42,12 @@ Once I seeded data and pointed API GET to DB, I got a 500 error. I didnt create 
 
 Also, I want better seed data so that I can test performance and implement pagination. 
 
-Now that I commented out DATABASE_URL in .env, I'll properly add that to gitignore. 
+Now that I commented out DATABASE_URL in .env, I'll properly add that to gitignore.
+
+## Styling the app
+
+The next piece I will attack is the design of this application. I am running out of time so I just used shadcn and whatever default theme they suggested (`new-york`).
+I added these:
+`npx shadcn@latest add table input skeleton button`
+
+Also remove document.getElementById and used state. Shouldnt be setting HTML directly like that.
