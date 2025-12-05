@@ -3,6 +3,8 @@
 Monday 12/1/2025: Opened assignment and read through instructions.
 Friday 12/5/2025 ~9:10am: Downloaded and set up git repo and started working.
 Friday 12/5/2025 ~9:40am: Paused working. At this stage I am 30ish minutes in. Am needed elsewhere.
+Friday 12/5/2025 ~11:00am: Started working again. DB set up.
+Friday 12/5/2025 ~11:38am: Paused working. At this stage I am 1 hour 8 minutes in.
 
 
 The first thing I did was install packages and ran local dev. The console showed some errors and warnings that I cleaned up right away.
