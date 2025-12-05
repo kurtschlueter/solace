@@ -6,15 +6,24 @@ import { Advocate } from "@/db/schema";
 export default function Home() {
   const [advocates, setAdvocates] = useState<Advocate[]>([]);
   const [filteredAdvocates, setFilteredAdvocates] = useState<Advocate[]>([]);
+  const [error, setError] = useState<boolean>(false);
 
   useEffect(() => {
-    console.log("fetching advocates...");
-    fetch("/api/advocates").then((response) => {
-      response.json().then((jsonResponse) => {
+    const fetchAdvocates = async () => {
+      try {
+        const response = await fetch("/api/advocates");
+        if (!response.ok) {
+          throw new Error("Failed to fetch advocates");
+        }
+        const jsonResponse = await response.json();
         setAdvocates(jsonResponse.data);
         setFilteredAdvocates(jsonResponse.data);
-      });
-    });
+      } catch (err) {
+        console.error("Error fetching advocates:", err);
+        setError(true);
+      }
+    };
+    fetchAdvocates();
   }, []);
 
   const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -41,6 +50,15 @@ export default function Home() {
     console.log(advocates);
     setFilteredAdvocates(advocates);
   };
+
+  if (error) {
+    return (
+      <main style={{ margin: "24px" }}>
+        <h1>Solace Advocates</h1>
+        <p style={{ color: "red" }}>Failed to load advocates. Please try again later.</p>
+      </main>
+    );q
+  }
 
   return (
     <main style={{ margin: "24px" }}>

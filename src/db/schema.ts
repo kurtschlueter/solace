@@ -9,7 +9,7 @@ import {
   bigint,
 } from "drizzle-orm/pg-core";
 
-const advocates = pgTable("advocates", {
+export const advocates = pgTable("advocates", {
   id: serial("id").primaryKey(),
   firstName: text("first_name").notNull(),
   lastName: text("last_name").notNull(),
