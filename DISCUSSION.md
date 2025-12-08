@@ -6,11 +6,15 @@ Friday 12/5/2025 ~9:40am: Paused working. At this stage I am 30ish minutes in. A
 Friday 12/5/2025 ~11:00am: Started working again. DB set up.
 Friday 12/5/2025 ~11:38am: Paused working. At this stage I am 1 hour 8 minutes in.
 Friday 12/5/2025 ~~1:00pm: Started working again. Styling
+Friday 12/5/2025 ~1:30pm: Paused working. At this stage I am 1 hour 38 minutes in.
+Monday 12/8/2025 ~12:20pm: Started working again. Pagination and Search
+Monday 12/8/2025 ~ 12:45: Stopped. 2 hours.
 
-
-The first thing I did was install packages and ran local dev. The console showed some errors and warnings that I cleaned up right away.
+# What I completed
 
 ## Console Errors
+
+The first thing I did was install packages and ran local dev. The console showed some errors and warnings that I cleaned up right away.
 
 `<th>` cannot be a child of `<thead>`
 ![th_cannot_be_child_of_head](./docs/images/th_cannot_be_child_of_head.png)
@@ -51,3 +55,20 @@ I added these:
 `npx shadcn@latest add table input skeleton button`
 
 Also remove document.getElementById and used state. Shouldnt be setting HTML directly like that.
+
+## Pagination and Search
+
+Made search not case sensetive. Looks like Drizzle ORM has `ilike` (https://orm.drizzle.team/docs/operators#ilike). I just used vanilla JS. If I had more time, I would try and use more of Drizzle's functionality like their filters.
+
+Added pagination using page and limit. 
+
+# What I would like to complete if I had more time
+
+I stuck to the 2 hour time limit here. Maybe I went a few minutes over. If I had more time, I would:
+- **URL state persistence** - Store page number and search term in URL params so users can share/bookmark results and use browser back/forward.
+- **Column sorting** - Click table headers to sort by name, years of experience, city, etc.
+- **Mobile responsive table** - Current table doesn't scroll well on mobile. Could use a card layout on small screens.
+- **Filter by specialty** - Add a dropdown or checkbox filter for specialties instead of just text search.
+- **Database indexes** - Add indexes on searchable columns (firstName, lastName, city) for better query performance at scale.
+- **Tests** - Add unit tests for the API route and component tests for the UI.
+- **Accessibility** - Improve keyboard navigation, add ARIA labels, ensure proper focus management.
