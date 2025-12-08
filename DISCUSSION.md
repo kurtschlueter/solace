@@ -72,3 +72,5 @@ I stuck to the 2 hour time limit here. Maybe I went a few minutes over. If I had
 - **Database indexes** - Add indexes on searchable columns (firstName, lastName, city) for better query performance at scale.
 - **Tests** - Add unit tests for the API route and component tests for the UI.
 - **Accessibility** - Improve keyboard navigation, add ARIA labels, ensure proper focus management.
+- **Component structure** - Break page.tsx into smaller components (SearchBar, AdvocatesTable, Pagination) for better maintainability and reusability.
+- **Linting & formatting** - Add ESLint rules for consistent code style, Prettier for auto-formatting, and pre-commit hooks with Husky to enforce standards.
