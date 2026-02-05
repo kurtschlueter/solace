@@ -13,56 +13,78 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { PAGE_SIZE } from "@/constants";
+
+const DEBOUNCE_MS = 300;
+
+interface Pagination {
+  page: number;
+  limit: number;
+  total: number;
+  totalPages: number;
+}
 
 export default function Home() {
   const [advocates, setAdvocates] = useState<Advocate[]>([]);
-  const [filteredAdvocates, setFilteredAdvocates] = useState<Advocate[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
+  const [debouncedSearch, setDebouncedSearch] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
+  const [pagination, setPagination] = useState<Pagination | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
 
-  useEffect(() => {
-    const fetchAdvocates = async () => {
-      try {
-        const response = await fetch("/api/advocates");
-        if (!response.ok) {
-          throw new Error("Failed to fetch advocates");
-        }
-        const jsonResponse = await response.json();
-        setAdvocates(jsonResponse.data);
-        setFilteredAdvocates(jsonResponse.data);
-      } catch (err) {
-        console.error("Error fetching advocates:", err);
-        setError(true);
-      } finally {
-        setLoading(false);
+  const fetchAdvocates = async (page: number, search: string) => {
+    try {
+      setLoading(true);
+      const params = new URLSearchParams({
+        page: page.toString(),
+        limit: PAGE_SIZE.toString(),
+      });
+      if (search) {
+        params.set("search", search);
       }
-    };
-    fetchAdvocates();
-  }, []);
+      
+      const response = await fetch(`/api/advocates?${params}`);
+      if (!response.ok) {
+        throw new Error("Failed to fetch advocates");
+      }
+      const jsonResponse = await response.json();
+      setAdvocates(jsonResponse.data);
+      setPagination(jsonResponse.pagination);
+    } catch (err) {
+      console.error("Error fetching advocates:", err);
+      setError(true);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Debounce search term
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setDebouncedSearch(searchTerm);
+    }, DEBOUNCE_MS);
+
+    return () => clearTimeout(timer);
+  }, [searchTerm]);
+
+  // Fetch when debounced search changes
+  useEffect(() => {
+    setCurrentPage(1);
+    fetchAdvocates(1, debouncedSearch);
+  }, [debouncedSearch]);
+
+  const onPageChange = (page: number) => {
+    setCurrentPage(page);
+    fetchAdvocates(page, debouncedSearch);
+  };
 
   const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const searchTerm = e.target.value;
-    setSearchTerm(searchTerm);
-
-    const filtered = advocates.filter((advocate) => {
-      const searchLower = searchTerm.toLowerCase();
-      return (
-        advocate.firstName.toLowerCase().includes(searchLower) ||
-        advocate.lastName.toLowerCase().includes(searchLower) ||
-        advocate.city.toLowerCase().includes(searchLower) ||
-        advocate.degree.toLowerCase().includes(searchLower) ||
-        advocate.specialties.some((s) => s.toLowerCase().includes(searchLower)) ||
-        advocate.yearsOfExperience.toString().includes(searchTerm)
-      );
-    });
-
-    setFilteredAdvocates(filtered);
+    setSearchTerm(e.target.value);
   };
 
   const onReset = () => {
     setSearchTerm("");
-    setFilteredAdvocates(advocates);
   };
 
   if (error) {
@@ -88,9 +110,9 @@ export default function Home() {
         <Button variant="outline" onClick={onReset}>
           Reset
         </Button>
-        {searchTerm && (
+        {pagination && (
           <span className="text-sm text-muted-foreground">
-            Showing {filteredAdvocates.length} of {advocates.length} advocates
+            {pagination.total} advocate{pagination.total !== 1 ? "s" : ""} found
           </span>
         )}
       </div>
@@ -116,14 +138,14 @@ export default function Home() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {filteredAdvocates.length === 0 ? (
+              {advocates.length === 0 ? (
                 <TableRow>
                   <TableCell colSpan={7} className="text-center text-muted-foreground">
                     No advocates found.
                   </TableCell>
                 </TableRow>
               ) : (
-                filteredAdvocates.map((advocate) => (
+                advocates.map((advocate) => (
                   <TableRow key={advocate.id}>
                     <TableCell>{advocate.firstName}</TableCell>
                     <TableCell>{advocate.lastName}</TableCell>
@@ -148,6 +170,36 @@ export default function Home() {
               )}
             </TableBody>
           </Table>
+        </div>
+      )}
+
+      {!loading && pagination && pagination.totalPages > 1 && (
+        <div className="flex items-center justify-between mt-4">
+          <span className="text-sm text-muted-foreground">
+            Showing {(currentPage - 1) * PAGE_SIZE + 1}-
+            {Math.min(currentPage * PAGE_SIZE, pagination.total)} of {pagination.total}
+          </span>
+          <div className="flex gap-2">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => onPageChange(currentPage - 1)}
+              disabled={currentPage === 1}
+            >
+              Previous
+            </Button>
+            <span className="flex items-center px-3 text-sm">
+              Page {currentPage} of {pagination.totalPages}
+            </span>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => onPageChange(currentPage + 1)}
+              disabled={currentPage === pagination.totalPages}
+            >
+              Next
+            </Button>
+          </div>
         </div>
       )}
     </main>

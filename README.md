@@ -4,38 +4,48 @@ This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next
 
 ## Getting Started
 
-Install dependencies
+### 1. Install dependencies
 
 ```bash
 npm i
 ```
 
-Run the development server:
+### 2. Start the PostgreSQL database
 
-```bash
-npm run dev
-```
-
-## Database set up
-
-The app is configured to return a default list of advocates. This will allow you to get the app up and running without needing to configure a database. If you’d like to configure a database, you’re encouraged to do so. You can uncomment the url in `.env` and the line in `src/app/api/advocates/route.ts` to test retrieving advocates from the database.
-
-1. Feel free to use whatever configuration of postgres you like. The project is set up to use docker-compose.yml to set up postgres. The url is in .env.
+The project uses Docker Compose to run PostgreSQL. This will automatically create the `solaceassignment` database.
 
 ```bash
 docker compose up -d
 ```
 
-2. Create a `solaceassignment` database.
-
-3. Push migration to the database
+### 3. Push the database schema
 
 ```bash
 npx drizzle-kit push
 ```
 
-4. Seed the database
+### 4. Run the development server
+
+```bash
+npm run dev
+```
+
+### 5. Seed the database
+
+With the dev server running, seed the database with sample data:
 
 ```bash
 curl -X POST http://localhost:3000/api/seed
 ```
+
+Open [http://localhost:3000](http://localhost:3000) to view the application.
+
+## Database Configuration
+
+The database connection URL is configured in `.env`:
+
+```
+DATABASE_URL=postgres://postgres:password@localhost:5432/solaceassignment
+```
+
+This matches the credentials in `docker-compose.yml`.
